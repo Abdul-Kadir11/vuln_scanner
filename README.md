@@ -23,8 +23,10 @@ pip install Sublist3r
 ```bash
 python3 vulnscan_cli.py
 python3 vulnscan_cli.py --target example.com
-python3 vulnscan_cli.py --target example.com --theme crt
+python3 vulnscan_cli.py --target example.com --theme default
 ```
+
+`CRT` theme is now the default UI mode.
 
 Disable boot animation if needed:
 

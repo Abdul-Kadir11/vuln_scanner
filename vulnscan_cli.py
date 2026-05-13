@@ -8,7 +8,7 @@ from rich import box
 
 from core.controller import scan_target
 
-console = Console()
+console = Console(force_terminal=True)
 TOOL_CHOICES = ("sublist3r", "subfinder", "amass", "httpx", "nuclei")
 DEFAULT_THEME = {
     "accent": "bright_cyan",
@@ -27,7 +27,7 @@ CRT_THEME = {
     "danger": "red",
 }
 
-THEME = DEFAULT_THEME.copy()
+THEME = CRT_THEME.copy()
 
 
 def set_theme(theme_name):
@@ -216,7 +216,7 @@ def run():
     parser.add_argument(
         "--theme",
         choices=("default", "crt"),
-        default="default",
+        default="crt",
         help="UI style theme",
     )
     parser.add_argument(
@@ -240,6 +240,8 @@ def run():
     set_theme(args.theme)
 
     banner()
+    mode_label = "CRT" if args.theme == "crt" else "DEFAULT"
+    console.print(f"[{THEME['accent']}]UI mode:[/{THEME['accent']}] [bold {THEME['accent_2']}]{mode_label}[/bold {THEME['accent_2']}]")
 
     target = (args.target or "").strip()
     if not target:
