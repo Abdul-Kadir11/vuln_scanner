@@ -2,6 +2,22 @@
 
 Unified vulnerability scanner with port/service checks, CVE mapping, recon, and plugin-based checks.
 
+## Install (Kali Linux)
+
+```bash
+git clone https://github.com/Abdul-Kadir11/vuln_scanner.git
+cd vuln_scanner
+
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# external tooling used by recon/probing modules
+sudo apt update
+sudo apt install -y amass subfinder nuclei httpx-toolkit
+pip install Sublist3r
+```
+
 ## Run
 
 ```bash
