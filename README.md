@@ -23,6 +23,13 @@ pip install Sublist3r
 ```bash
 python3 vulnscan_cli.py
 python3 vulnscan_cli.py --target example.com
+python3 vulnscan_cli.py --target example.com --theme crt
+```
+
+Disable boot animation if needed:
+
+```bash
+python3 vulnscan_cli.py --target example.com --no-boot
 ```
 
 ## Advanced Tooling (Phase 1)

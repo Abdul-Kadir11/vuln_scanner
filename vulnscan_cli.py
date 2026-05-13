@@ -1,4 +1,5 @@
 import argparse
+import time
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -9,13 +10,32 @@ from core.controller import scan_target
 
 console = Console()
 TOOL_CHOICES = ("sublist3r", "subfinder", "amass", "httpx", "nuclei")
-THEME = {
+DEFAULT_THEME = {
     "accent": "bright_cyan",
     "accent_2": "bright_magenta",
     "ok": "bright_green",
     "warn": "bright_yellow",
     "muted": "grey70",
+    "danger": "bright_red",
 }
+CRT_THEME = {
+    "accent": "green",
+    "accent_2": "bright_green",
+    "ok": "bright_green",
+    "warn": "yellow",
+    "muted": "green4",
+    "danger": "red",
+}
+
+THEME = DEFAULT_THEME.copy()
+
+
+def set_theme(theme_name):
+    global THEME
+    if theme_name == "crt":
+        THEME = CRT_THEME.copy()
+        return
+    THEME = DEFAULT_THEME.copy()
 
 
 def banner():
@@ -29,15 +49,50 @@ def banner():
 
              Unified Vulnerability Scanner
 """
+    subtitle = "Author: Cyber_Abdul"
+    border_style = THEME["accent"]
+    panel_box = box.ROUNDED
+    if THEME["accent"] == "green":
+        subtitle = "CRT MODE: ENABLED | Author: Cyber_Abdul"
+        border_style = "green"
+        panel_box = box.HEAVY
+
     console.print(
         Panel.fit(
             f"[{THEME['accent']}]{ascii_art}[/{THEME['accent']}]",
             title=f"[bold {THEME['accent_2']}]VULNSCAN[/bold {THEME['accent_2']}]",
-            subtitle=f"[{THEME['muted']}]Author: Cyber_Abdul[/{THEME['muted']}]",
-            border_style=THEME["accent"],
-            box=box.ROUNDED,
+            subtitle=f"[{THEME['muted']}]{subtitle}[/{THEME['muted']}]",
+            border_style=border_style,
+            box=panel_box,
         )
     )
+
+
+def show_boot_sequence(target):
+    steps = [
+        "Bootstrapping scan engine",
+        "Loading recon modules",
+        "Arming vulnerability checks",
+        f"Resolving target profile: {target}",
+    ]
+    with Progress(transient=True) as progress:
+        task = progress.add_task(f"[{THEME['accent']}]Initializing...[/]", total=len(steps))
+        for step in steps:
+            progress.update(task, description=f"[{THEME['accent']}]{step}[/]", advance=1)
+            time.sleep(0.18)
+
+
+def styled_severity(severity):
+    level = str(severity or "LOW").upper()
+    if level == "CRITICAL":
+        return f"[bold {THEME['danger']}]☠ CRITICAL[/bold {THEME['danger']}]"
+    if level == "HIGH":
+        return f"[bold {THEME['danger']}]▲ HIGH[/bold {THEME['danger']}]"
+    if level == "MEDIUM":
+        return f"[bold {THEME['warn']}]◆ MEDIUM[/bold {THEME['warn']}]"
+    if level == "INFO":
+        return f"[bold {THEME['accent']}]● INFO[/bold {THEME['accent']}]"
+    return f"[{THEME['muted']}]• {level}[/{THEME['muted']}]"
 
 
 def show_ports(open_ports, services, versions, cves):
@@ -147,7 +202,7 @@ def show_results(data):
         else:
             for issue in issues:
                 table.add_row(
-                    issue.get("severity", "-"),
+                    styled_severity(issue.get("severity", "-")),
                     issue.get("title", "-"),
                     str(issue.get("cve", "-"))
                 )
@@ -158,6 +213,17 @@ def show_results(data):
 def run():
     parser = argparse.ArgumentParser(description="Unified Vulnerability Scanner")
     parser.add_argument("-t", "--target", help="Target IP, hostname, or URL")
+    parser.add_argument(
+        "--theme",
+        choices=("default", "crt"),
+        default="default",
+        help="UI style theme",
+    )
+    parser.add_argument(
+        "--no-boot",
+        action="store_true",
+        help="Disable animated boot sequence",
+    )
     parser.add_argument(
         "--disable-tool",
         action="append",
@@ -171,6 +237,7 @@ def run():
         help="Disable recon subdomain enumeration tools",
     )
     args = parser.parse_args()
+    set_theme(args.theme)
 
     banner()
 
@@ -179,6 +246,9 @@ def run():
         target = console.input(
             f"[bold {THEME['accent']}]Enter target (IP or URL):[/bold {THEME['accent']}] "
         ).strip()
+
+    if not args.no_boot:
+        show_boot_sequence(target)
 
     console.print(f"\n[{THEME['accent']}][+] Running scan on {target}[/{THEME['accent']}]\n")
 
