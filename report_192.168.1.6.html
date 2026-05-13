@@ -1,0 +1,61 @@
+
+    <html>
+    <head>
+        <title>Scan Report</title>
+        <style>
+            body { font-family: Arial; }
+            table { border-collapse: collapse; width: 100%; }
+            td, th { border: 1px solid #ddd; padding: 8px; }
+        </style>
+    </head>
+    <body>
+    <h2>Scan Report: http://192.168.1.6</h2>
+    <h3>MySQL Security Check</h3><table><tr><th>Title</th><th>Severity</th><th>CVE</th></tr>
+            <tr>
+                <td>MySQL Banner detected (5.0.51)</td>
+                <td>MEDIUM</td>
+                <td>None</td>
+            </tr>
+            
+            <tr>
+                <td>Outdated MySQL version detected</td>
+                <td>HIGH</td>
+                <td>None</td>
+            </tr>
+            </table><br><h3>SMB Security Check</h3><table><tr><th>Title</th><th>Severity</th><th>CVE</th></tr>
+            <tr>
+                <td>SMB port open</td>
+                <td>MEDIUM</td>
+                <td>None</td>
+            </tr>
+            </table><br><h3>FTP Security Check</h3><table><tr><th>Title</th><th>Severity</th><th>CVE</th></tr>
+            <tr>
+                <td>FTP Banner: 220 (vsFTPd 2.3.4)</td>
+                <td>CRITICAL</td>
+                <td>None</td>
+            </tr>
+            </table><br><h3>SSH Security Check</h3><table><tr><th>Title</th><th>Severity</th><th>CVE</th></tr>
+            <tr>
+                <td>SSH Banner: SSH-2.0-OpenSSH_4.7p1 Debian-8ubuntu1</td>
+                <td>MEDIUM</td>
+                <td>None</td>
+            </tr>
+            
+            <tr>
+                <td>Outdated SSH version detected</td>
+                <td>HIGH</td>
+                <td>None</td>
+            </tr>
+            </table><br><h3>Security Headers Check</h3><table><tr><th>Title</th><th>Severity</th><th>CVE</th></tr>
+            <tr>
+                <td>Missing Content-Security-Policy</td>
+                <td>MEDIUM</td>
+                <td>None</td>
+            </tr>
+            
+            <tr>
+                <td>Missing X-Frame-Options</td>
+                <td>MEDIUM</td>
+                <td>None</td>
+            </tr>
+            </table><br></body></html>

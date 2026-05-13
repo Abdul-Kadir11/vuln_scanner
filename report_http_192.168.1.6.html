@@ -1,0 +1,105 @@
+
+    <html>
+    <head>
+        <title>Vulnerability Report</title>
+        <style>
+            body { font-family: Arial; background: #111; color: #eee; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #444; padding: 8px; }
+            th { background: #222; }
+        </style>
+    </head>
+
+    <body>
+        <h1>Scan Report</h1>
+        <p>Target: http://192.168.1.6</p>
+        <p>Time: 2026-05-10 17:56:45.796681</p>
+
+        <h2>Summary</h2>
+        <ul>
+            <li>CRITICAL: 1</li>
+            <li>HIGH: 1</li>
+            <li>MEDIUM: 4</li>
+            <li>LOW: 2</li>
+        </ul>
+
+        <h2>Findings</h2>
+
+        <table>
+            <tr>
+                <th>Plugin</th>
+                <th>Category</th>
+                <th>Issue</th>
+                <th>Severity</th>
+                <th>CVE</th>
+            </tr>
+            
+            <tr>
+                <td>Security Headers Check</td>
+                <td>web</td>
+                <td>[HIGH] Missing CSP</td>
+                <td>MEDIUM</td>
+                <td>None</td>
+            </tr>
+            
+            <tr>
+                <td>Security Headers Check</td>
+                <td>web</td>
+                <td>[MEDIUM] Missing X-Frame-Options</td>
+                <td>MEDIUM</td>
+                <td>None</td>
+            </tr>
+            
+            <tr>
+                <td>MySQL Security Check</td>
+                <td>mysql</td>
+                <td>MySQL Banner: >5.0.51a-3ubuntu5+eO<{xi%y,Ty$BbEr1;u[G</td>
+                <td>MEDIUM</td>
+                <td>None</td>
+            </tr>
+            
+            <tr>
+                <td>MySQL Security Check</td>
+                <td>mysql</td>
+                <td>WARNING: Outdated MySQL version detected</td>
+                <td>HIGH</td>
+                <td>None</td>
+            </tr>
+            
+            <tr>
+                <td>SMB Security Check</td>
+                <td>smb</td>
+                <td>SMB port open (445)</td>
+                <td>LOW</td>
+                <td>None</td>
+            </tr>
+            
+            <tr>
+                <td>FTP Security Check</td>
+                <td>ftp</td>
+                <td>FTP Banner: 220 (vsFTPd 2.3.4)</td>
+                <td>CRITICAL</td>
+                <td>CVE-2011-2523</td>
+            </tr>
+            
+            <tr>
+                <td>SSH Security Check</td>
+                <td>ssh</td>
+                <td>SSH Banner: SSH-2.0-OpenSSH_4.7p1 Debian-8ubuntu1</td>
+                <td>MEDIUM</td>
+                <td>CVE-2008-0166</td>
+            </tr>
+            
+            <tr>
+                <td>SSH Security Check</td>
+                <td>ssh</td>
+                <td>WARNING: Old SSH version detected</td>
+                <td>LOW</td>
+                <td>None</td>
+            </tr>
+            
+        </table>
+
+    </body>
+    </html>
+    

@@ -1,0 +1,100 @@
+{
+    "target": "http://192.168.1.6",
+    "timestamp": "2026-05-10 18:51:40.727106",
+    "findings": [
+        {
+            "plugin": "Security Headers Check",
+            "category": "web",
+            "issues": [
+                {
+                    "title": "[HIGH] Missing CSP",
+                    "severity": "MEDIUM",
+                    "cve": null,
+                    "evidence": null,
+                    "port": null,
+                    "service": null
+                },
+                {
+                    "title": "[MEDIUM] Missing X-Frame-Options",
+                    "severity": "MEDIUM",
+                    "cve": null,
+                    "evidence": null,
+                    "port": null,
+                    "service": null
+                }
+            ]
+        },
+        {
+            "plugin": "MySQL Security Check",
+            "category": "mysql",
+            "issues": [
+                {
+                    "title": "MySQL Banner detected (5.0.51)",
+                    "severity": "MEDIUM",
+                    "cve": null,
+                    "evidence": ">\u0000\u0000\u0000\n5.0.51a-3ubuntu5\u00003\u0000\u0000\u0000&Gs-&t9_\u0000,\b\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000PU9]J:#=J=4,\u0000",
+                    "port": 3306,
+                    "service": "mysql"
+                },
+                {
+                    "title": "Outdated MySQL version detected",
+                    "severity": "HIGH",
+                    "cve": null,
+                    "evidence": "5.0.51",
+                    "port": 3306,
+                    "service": "mysql"
+                }
+            ]
+        },
+        {
+            "plugin": "SMB Security Check",
+            "category": "smb",
+            "issues": [
+                {
+                    "title": "SMB port open (445)",
+                    "severity": "LOW",
+                    "cve": null,
+                    "evidence": null,
+                    "port": null,
+                    "service": null
+                }
+            ]
+        },
+        {
+            "plugin": "FTP Security Check",
+            "category": "ftp",
+            "issues": [
+                {
+                    "title": "FTP Banner: 220 (vsFTPd 2.3.4)",
+                    "severity": "CRITICAL",
+                    "cve": "CVE-2011-2523",
+                    "evidence": null,
+                    "port": null,
+                    "service": null
+                }
+            ]
+        },
+        {
+            "plugin": "SSH Security Check",
+            "category": "ssh",
+            "issues": [
+                {
+                    "title": "SSH Banner: SSH-2.0-OpenSSH_4.7p1 Debian-8ubuntu1",
+                    "severity": "MEDIUM",
+                    "cve": "CVE-2008-0166",
+                    "evidence": null,
+                    "port": null,
+                    "service": null
+                },
+                {
+                    "title": "WARNING: Old SSH version detected",
+                    "severity": "LOW",
+                    "cve": null,
+                    "evidence": null,
+                    "port": null,
+                    "service": null
+                }
+            ]
+        }
+    ]
+}

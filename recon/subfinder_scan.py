@@ -1,0 +1,41 @@
+import ipaddress
+import shutil
+import subprocess
+from urllib.parse import urlparse
+
+
+def _extract_host(target):
+    parsed = urlparse(target if "://" in target else f"//{target}")
+    return parsed.hostname or target
+
+
+def _is_ip_address(value):
+    try:
+        ipaddress.ip_address(value)
+        return True
+    except ValueError:
+        return False
+
+
+def scan(target):
+    host = _extract_host(target).strip().lower()
+
+    if not host or _is_ip_address(host):
+        return []
+
+    if shutil.which("subfinder") is None:
+        raise RuntimeError("subfinder binary not found in PATH")
+
+    cmd = ["subfinder", "-silent", "-all", "-recursive", "-d", host]
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=180, check=False)
+
+    if result.returncode != 0 and not result.stdout.strip():
+        raise RuntimeError(result.stderr.strip() or "subfinder failed")
+
+    discovered = {
+        line.strip().lower()
+        for line in result.stdout.splitlines()
+        if line.strip() and line.strip().lower().endswith(host)
+    }
+
+    return sorted(discovered)
