@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VULNSCAN Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 24px;
+        line-height: 1.4;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      input[type="text"] {
+        flex: 1;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #334155;
+        background: #020617;
+        color: #e2e8f0;
+      }
+      button {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: none;
+        background: #2563eb;
+        color: #fff;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+      .warning {
+        margin-bottom: 12px;
+        color: #fbbf24;
+      }
+      .scan-summary,
+      .finding-card,
+      .scan-error {
+        border: 1px solid #334155;
+        background: #111827;
+        border-radius: 10px;
+        padding: 12px;
+        margin-top: 10px;
+      }
+      .scan-error {
+        color: #fca5a5;
+      }
+      pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        background: #020617;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #1e293b;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>VULNSCAN</h1>
+    <p class="warning">{{ safety_warning }}</p>
+    <div class="row">
+      <input id="targetInput" type="text" placeholder="example.com or 192.168.1.10" />
+      <button id="scanBtn" onclick="runScan()">Run Scan</button>
+    </div>
+    <div id="summary"></div>
+    <div id="results"></div>
+
+    <script>
+      function renderSummary(summary) {
+        const el = document.getElementById("summary");
+        const s = summary || { critical: 0, high: 0, medium: 0, low: 0, info: 0 };
+        el.innerHTML = "";
+
+        const div = document.createElement("div");
+        div.className = "scan-summary";
+        div.textContent = `Critical: ${s.critical || 0}, High: ${s.high || 0}, Medium: ${s.medium || 0}, Low: ${s.low || 0}, Info: ${s.info || 0}`;
+        el.appendChild(div);
+      }
+
+      function renderResults(data) {
+        const container = document.getElementById("results");
+        container.innerHTML = "";
+
+        if (data.error) {
+          const errorDiv = document.createElement("div");
+          errorDiv.className = "scan-error";
+          errorDiv.textContent = `Scan error: ${data.error}`;
+          container.appendChild(errorDiv);
+          return;
+        }
+
+        const findings = Array.isArray(data.findings) ? data.findings : [];
+
+        if (!findings.length) {
+          const empty = document.createElement("p");
+          empty.textContent = "No findings.";
+          container.appendChild(empty);
+          return;
+        }
+
+        findings.forEach((finding) => {
+          const card = document.createElement("div");
+          card.className = "finding-card";
+
+          const title = document.createElement("h3");
+          title.textContent = finding.title || "Untitled Finding";
+
+          const severity = document.createElement("p");
+          severity.textContent = `Severity: ${finding.severity || "Info"}`;
+
+          const risk = document.createElement("p");
+          risk.textContent = `Risk Score: ${finding.risk_score ?? 0}`;
+
+          const svc = document.createElement("p");
+          svc.textContent = `Service: ${finding.service || finding.evidence?.service || "-"}`;
+
+          const ver = document.createElement("p");
+          ver.textContent = `Version: ${finding.version || finding.evidence?.version || "-"}`;
+
+          const cves = document.createElement("p");
+          const cveList = Array.isArray(finding.cves) ? finding.cves : (finding.cve ? [finding.cve] : []);
+          cves.textContent = `CVEs: ${cveList.length ? cveList.join(", ") : "-"}`;
+
+          const kev = document.createElement("p");
+          kev.textContent = `KEV Flag: ${finding.kev_flag ? "true" : "false"}`;
+
+          const evidence = document.createElement("pre");
+          evidence.textContent = JSON.stringify(finding.evidence || {}, null, 2);
+
+          card.appendChild(title);
+          card.appendChild(severity);
+          card.appendChild(risk);
+          card.appendChild(svc);
+          card.appendChild(ver);
+          card.appendChild(cves);
+          card.appendChild(kev);
+          card.appendChild(evidence);
+          container.appendChild(card);
+        });
+      }
+
+      async function runScan() {
+        const target = document.getElementById("targetInput").value.trim();
+        if (!target) return;
+
+        const scanBtn = document.getElementById("scanBtn");
+        scanBtn.disabled = true;
+        scanBtn.textContent = "Scanning...";
+
+        try {
+          const response = await fetch("/api/scan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              target,
+              internet_exposed: true,
+              generate_pdf: true,
+              generate_json: true
+            })
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || `Scan failed (${response.status})`);
+          }
+
+          renderResults(data);
+          renderSummary(data.summary || { critical: 0, high: 0, medium: 0, low: 0, info: 0 });
+        } catch (err) {
+          renderResults({
+            target,
+            findings: [],
+            summary: { critical: 0, high: 0, medium: 0, low: 0, info: 0 },
+            error: err.message
+          });
+          renderSummary({ critical: 0, high: 0, medium: 0, low: 0, info: 0 });
+        } finally {
+          scanBtn.disabled = false;
+          scanBtn.textContent = "Run Scan";
+        }
+      }
+    </script>
+  </body>
+</html>
